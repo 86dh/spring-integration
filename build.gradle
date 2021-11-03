@@ -2,7 +2,7 @@ buildscript {
 	ext.kotlinVersion = '1.5.32'
 	repositories {
 		mavenCentral()
-		maven { url 'https://plugins.gradle.org/m2' }
+		gradlePluginPortal()
 		maven { url 'https://repo.spring.io/plugins-release-local' }
 	}
 	dependencies {
@@ -46,8 +46,8 @@ ext {
 	modifiedFiles =
 			files(grgit.status().unstaged.modified).filter{ f -> f.name.endsWith('.java') || f.name.endsWith('.kt') }
 
-	activeMqVersion = '5.16.3'
 	apacheSshdVersion = '2.7.0'
+	artemisVersion = '2.19.0'
 	aspectjVersion = '1.9.7'
 	assertjVersion = '3.21.0'
 	assertkVersion = '0.25'
@@ -60,55 +60,52 @@ ext {
 	derbyVersion = '10.14.2.0'
 	ftpServerVersion = '1.1.1'
 	googleJsr305Version = '3.0.2'
-	greenmailVersion = '1.6.5'
+	greenmailVersion = '2.0.0-alpha-2'
 	groovyVersion = '3.0.9'
 	hamcrestVersion = '2.2'
 	hazelcastVersion = '4.2.3'
-	hibernateVersion = '5.5.9.Final'
+	hibernateVersion = '5.6.1.Final'
 	hsqldbVersion = '2.6.0'
 	h2Version = '1.4.200'
-	jacksonVersion = '2.12.6'
-	javaxActivationVersion = '1.2.0'
-	jaxbVersion = '2.3.4'
+	jacksonVersion = '2.13.0'
+	jaxbVersion = '3.0.2'
 	jeroMqVersion = '0.5.2'
-	jmsApiVersion = '2.0.1'
-	jpaApiVersion = '2.7.7'
+	jmsApiVersion = '3.0.0'
+	jpaApiVersion = '3.0.2'
 	jrubyVersion = '9.2.19.0'
 	jschVersion = '0.1.55'
 	jsonpathVersion = '2.6.0'
 	junit4Version = '4.13.2'
-	junitJupiterVersion = '5.7.2'
+	junitJupiterVersion = '5.8.1'
 	jythonVersion = '2.7.2'
 	kryoShadedVersion = '4.0.2'
     lettuceVersion = '6.1.5.RELEASE'
 	log4jVersion = '2.17.0'
-	mailVersion = '1.6.7'
+	mailVersion = '2.0.1'
 	micrometerVersion = '1.7.7'
-	mockitoVersion = '3.12.4'
-	mongoDriverVersion = '4.3.2'
+	mockitoVersion = '4.0.0'
+	mongoDriverVersion = '4.4.0-beta2'
 	mysqlVersion = '8.0.27'
 	pahoMqttClientVersion = '1.2.5'
 	postgresVersion = '42.2.23'
 	r2dbch2Version='0.8.4.RELEASE'
-	reactorVersion = '2020.0.13'
+	reactorVersion = '2020.0.14'
 	resilience4jVersion = '1.7.1'
 	romeToolsVersion = '1.16.0'
 	rsocketVersion = '1.1.1'
-	saajVersion = '1.5.2'
-	servletApiVersion = '4.0.1'
+	saajVersion = '2.0.1'
+	servletApiVersion = '5.0.0'
 	smackVersion = '4.3.5'
-	soapVersion = '1.4.0'
-	springAmqpVersion = project.hasProperty('springAmqpVersion') ? project.springAmqpVersion : '2.3.13'
-	springDataVersion = project.hasProperty('springDataVersion') ? project.springDataVersion : '2021.0.7'
-	springKafkaVersion = '2.7.9'
+	springAmqpVersion = project.hasProperty('springAmqpVersion') ? project.springAmqpVersion : '3.0.0-SNAPSHOT'
+	springDataVersion = project.hasProperty('springDataVersion') ? project.springDataVersion : '2022.1.0-SNAPSHOT'
+	springKafkaVersion = '3.0.0-SNAPSHOT'
 	springRetryVersion = '1.3.1'
-	springSecurityVersion = project.hasProperty('springSecurityVersion') ? project.springSecurityVersion : '5.5.4'
-	springVersion = project.hasProperty('springVersion') ? project.springVersion : '5.3.14'
-	springWsVersion = '3.1.2'
-	testcontainersVersion = '1.16.2'
-	tomcatVersion = '9.0.56'
-	xmlUnitVersion = '2.8.2'
-	xstreamVersion = '1.4.17'
+	springSecurityVersion = project.hasProperty('springSecurityVersion') ? project.springSecurityVersion : '6.0.0-SNAPSHOT'
+	springVersion = project.hasProperty('springVersion') ? project.springVersion : '6.0.0-SNAPSHOT'
+	springWsVersion = '4.0.0-SNAPSHOT'
+	tomcatVersion = '10.0.11'
+	xmlUnitVersion = '2.8.3'
+	xstreamVersion = '1.4.18'
 
 	javaProjects = subprojects - project(':spring-integration-bom')
 }
@@ -130,7 +127,8 @@ allprojects {
 	}
 
 	ext.javadocLinks = [
-		'https://docs.oracle.com/en/java/javase/15/docs/api',
+		'https://docs.oracle.com/en/java/javase/17/docs/api/',
+		'https://jakarta.ee/specifications/platform/9/apidocs/',
 		'https://docs.spring.io/spring-framework/docs/current/javadoc-api',
 		'https://docs.spring.io/spring-amqp/docs/current/api/',
 		'https://docs.spring.io/spring-data-gemfire/docs/current/api/',
@@ -194,32 +192,36 @@ configure(javaProjects) { subproject ->
 	}
 
 	compileJava {
-		sourceCompatibility = 1.8
-		targetCompatibility = 1.8
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
 	}
 
 	compileTestJava {
-		sourceCompatibility = 11
-		targetCompatibility = 11
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
 		options.encoding = 'UTF-8'
 	}
 
 	compileKotlin {
 		kotlinOptions {
-			apiVersion = '1.3'
-			jvmTarget = '1.8'
+			jvmTarget = '16'
 			freeCompilerArgs = ['-Xjsr305=strict']
-//			allWarningsAsErrors = true TODO bring it back after upgrading to Kotlin 1.5 language version
+			allWarningsAsErrors = true
 		}
 	}
 	compileTestKotlin {
 		kotlinOptions {
-			jvmTarget = '11'
+			jvmTarget = '16'
 		}
 	}
 
 	tasks.withType(JavaCompile).configureEach {
 		options.fork = true
+	}
+
+	tasks.withType(Javadoc) {
+		options.addBooleanOption('Xdoclint:syntax', true) // only check syntax with doclint
+		options.addBooleanOption('Werror', true) // fail build on Javadoc warnings
 	}
 
 	eclipse {
@@ -564,7 +566,7 @@ project('spring-integration-http') {
 	dependencies {
 		api project(':spring-integration-core')
 		api 'org.springframework:spring-webmvc'
-		providedImplementation "javax.servlet:javax.servlet-api:$servletApiVersion"
+		providedImplementation "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
 		optionalApi "com.rometools:rome:$romeToolsVersion"
 		optionalApi 'org.springframework:spring-webflux'
 
@@ -593,6 +595,10 @@ project('spring-integration-ip') {
 		testRuntimeOnly "com.esotericsoftware:kryo-shaded:$kryoShadedVersion"
 		testRuntimeOnly 'com.fasterxml.jackson.core:jackson-databind'
 	}
+
+	tasks.withType(JavaForkOptions) {
+		jvmArgs '--add-opens', 'java.base/java.nio.channels.spi=ALL-UNNAMED'
+	}
 }
 
 project('spring-integration-jdbc') {
@@ -619,10 +625,14 @@ project('spring-integration-jms') {
 	dependencies {
 		api project(':spring-integration-core')
 		api 'org.springframework:spring-jms'
-		providedImplementation "javax.jms:javax.jms-api:$jmsApiVersion"
+		providedImplementation "jakarta.jms:jakarta.jms-api:$jmsApiVersion"
 
-		testImplementation "org.apache.activemq:activemq-broker:$activeMqVersion"
+		testImplementation ("org.apache.activemq:artemis-server:$artemisVersion") {
+			exclude group: 'org.jboss.logmanager'
+		}
+		testImplementation "org.apache.activemq:artemis-jakarta-client:$artemisVersion"
 		testImplementation 'org.springframework:spring-oxm'
+		testImplementation 'com.fasterxml.jackson.core:jackson-databind'
 	}
 }
 
@@ -647,7 +657,7 @@ project('spring-integration-jpa') {
 			exclude group: 'org.springframework'
 		}
 		testImplementation "com.h2database:h2:$h2Version"
-		testImplementation "org.hibernate:hibernate-entitymanager:$hibernateVersion"
+		testImplementation "org.hibernate:hibernate-core-jakarta:$hibernateVersion"
 		testImplementation "org.hamcrest:hamcrest-core:$hamcrestVersion"
 	}
 }
@@ -662,8 +672,7 @@ project('spring-integration-kafka') {
 
 		testImplementation "org.springframework.kafka:spring-kafka-test:$springKafkaVersion"
 		testImplementation "org.hamcrest:hamcrest-core:$hamcrestVersion"
-
-		testRuntimeOnly 'com.fasterxml.jackson.core:jackson-databind'
+		testImplementation 'com.fasterxml.jackson.core:jackson-databind'
 	}
 }
 
@@ -730,13 +739,6 @@ project('spring-integration-redis') {
 	}
 }
 
-project('spring-integration-rmi') {
-	description = 'Spring Integration RMI Support'
-	dependencies {
-		api project(':spring-integration-core')
-	}
-}
-
 project('spring-integration-rsocket') {
 	description = 'Spring Integration RSocket Support'
 	dependencies {
@@ -799,8 +801,11 @@ project('spring-integration-stomp') {
 		testImplementation project(':spring-integration-websocket')
 		testImplementation project(':spring-integration-websocket').sourceSets.test.output
 		testImplementation project(':spring-integration-event')
-		testImplementation "org.apache.activemq:activemq-stomp:$activeMqVersion"
+		testImplementation ("org.apache.activemq:artemis-stomp-protocol:$artemisVersion") {
+			exclude group: 'org.jboss.logmanager'
+		}
 		testImplementation "org.apache.tomcat.embed:tomcat-embed-websocket:$tomcatVersion"
+		testImplementation 'com.fasterxml.jackson.core:jackson-databind'
 
 		testRuntimeOnly 'org.springframework:spring-webmvc'
 	}
@@ -810,6 +815,10 @@ project('spring-integration-stream') {
 	description = 'Spring Integration Stream Support'
 	dependencies {
 		api project(':spring-integration-core')
+	}
+
+	tasks.withType(JavaForkOptions) {
+		jvmArgs '--add-opens', 'java.base/java.io=ALL-UNNAMED'
 	}
 }
 
@@ -837,7 +846,7 @@ project('spring-integration-webflux') {
 		api 'org.springframework:spring-webflux'
 		optionalApi 'io.projectreactor.netty:reactor-netty-http'
 
-		testImplementation "javax.servlet:javax.servlet-api:$servletApiVersion"
+		testImplementation "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
 		testImplementation "org.hamcrest:hamcrest-core:$hamcrestVersion"
 		testImplementation 'org.springframework:spring-webmvc'
 		testImplementation ("org.springframework.security:spring-security-config:$springSecurityVersion") {
@@ -858,7 +867,7 @@ project('spring-integration-websocket') {
 		api project(':spring-integration-core')
 		api 'org.springframework:spring-websocket'
 		optionalApi 'org.springframework:spring-webmvc'
-		providedImplementation "javax.servlet:javax.servlet-api:$servletApiVersion"
+		providedImplementation "jakarta.servlet:jakarta.servlet-api:$servletApiVersion"
 
 		testImplementation project(':spring-integration-event')
 		testImplementation "org.apache.tomcat.embed:tomcat-embed-websocket:$tomcatVersion"
@@ -877,8 +886,6 @@ project('spring-integration-ws') {
 			exclude group: 'org.springframework'
 		}
 
-		optionalApi "javax.activation:javax.activation-api:$javaxActivationVersion"
-		providedImplementation "javax.xml.soap:javax.xml.soap-api:$soapVersion"
 		providedImplementation "com.sun.xml.bind:jaxb-impl:$jaxbVersion"
 		providedImplementation "com.sun.xml.messaging.saaj:saaj-impl:$saajVersion"
 
@@ -887,12 +894,11 @@ project('spring-integration-ws') {
 			exclude group: 'org.springframework'
 		}
 		testImplementation 'org.springframework:spring-jms'
-		testImplementation "javax.jms:javax.jms-api:$jmsApiVersion"
+		testImplementation "jakarta.jms:jakarta.jms-api:$jmsApiVersion"
 		testImplementation "org.igniterealtime.smack:smack-tcp:$smackVersion"
 		testImplementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
 		testImplementation "jakarta.mail:jakarta.mail-api:$mailVersion"
 
-		testRuntimeOnly "com.sun.mail:mailapi:$mailVersion"
 		testRuntimeOnly "com.sun.mail:jakarta.mail:$mailVersion"
 	}
 }
@@ -911,6 +917,10 @@ project('spring-integration-xml') {
 
 		testImplementation "com.sun.xml.bind:jaxb-impl:$jaxbVersion"
 		testImplementation "org.xmlunit:xmlunit-assertj3:$xmlUnitVersion"
+	}
+
+	tasks.withType(JavaForkOptions) {
+		jvmArgs '--add-opens', 'java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED'
 	}
 }
 
@@ -990,12 +1000,18 @@ task api(type: Javadoc) {
 	group = 'Documentation'
 	description = 'Generates aggregated Javadoc API documentation.'
 	title = "${rootProject.description} ${version} API"
-	options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
-	options.author = true
-	options.header = rootProject.description
-	options.overview = 'src/api/overview.html'
-	options.stylesheetFile = file('src/api/stylesheet.css')
-	options.links(project.ext.javadocLinks)
+	options {
+		encoding = 'UTF-8'
+		memberLevel = JavadocMemberLevel.PROTECTED
+		author = true
+		header = rootProject.description
+		use = true
+		overview = 'src/api/overview.html'
+		splitIndex = true
+		links(project.ext.javadocLinks)
+		addBooleanOption('Xdoclint:syntax', true) // only check syntax with doclint
+	}
+
 	source javaProjects.collect { project ->
 		project.sourceSets.main.allJava
 	}
